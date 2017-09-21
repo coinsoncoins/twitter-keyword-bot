@@ -1,0 +1,27 @@
+{
+  "name": "twitter-keyword-bot",
+  "version": "1.0.0",
+  "description": "alerts when a particular keyword is tweeted",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coinsoncoins/twitter-keyword-bot.git"
+  },
+  "keywords": [
+    "twitter",
+    "keyword",
+    "bot"
+  ],
+  "author": "@coinsoncoins",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coinsoncoins/twitter-keyword-bot/issues"
+  },
+  "homepage": "https://github.com/coinsoncoins/twitter-keyword-bot#readme",
+  "dependencies": {
+    "twitter": "^1.7.1"
+  }
+}
