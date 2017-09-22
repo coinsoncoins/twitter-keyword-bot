@@ -1,15 +1,22 @@
 var TwitterPackage = require('twitter');
+const Slimbot = require('slimbot');
+const slimbot = new Slimbot(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_TOKEN']);
 
 _ = require('lodash');
 const isTweet = function(tweet) {
   return _.isString(tweet.id_str) && _.isString(tweet.text) &&
-  tweet.user && _.isString(tweet.user.name)
+  tweet.user && _.isString(tweet.user.screen_name)
 }
 
 const util = require('util');
 
-function sendToTelegramBot(user, text) {
-  console.log(user + " tweeted: " + text);
+function filterTweetForKeywords(user, text) {
+  if (! (_.includes(text, 'burn') || _.includes(text, 'countdown') 
+    || _.includes(text, 'announcement') || _.includes(text, 'atomic'))) { return; }
+
+  message = "@" + user + ": " + text
+  console.log(message);
+  slimbot.sendMessage(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_CHAT_ID'], message);
 }
 
 var secret = {
@@ -27,9 +34,9 @@ client.stream('user', {with: 'followings'},  function(stream) {
     //console.log(util.inspect(tweet, false, null))
 
     if (isTweet(tweet)) {
-      user = tweet.user.name;
+      user = tweet.user.screen_name;
       text = tweet.text;
-      sendToTelegramBot(user, text);
+      filterTweetForKeywords(user, text);
     }
   });
 

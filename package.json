@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/coinsoncoins/twitter-keyword-bot#readme",
   "dependencies": {
+    "axios": "^0.16.2",
     "lodash": "^4.17.4",
+    "slimbot": "^0.7.4",
     "twitter": "^1.7.1"
   }
 }
