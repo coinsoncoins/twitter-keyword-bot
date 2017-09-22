@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var TwitterPackage = require('twitter');
 const Slimbot = require('slimbot');
 const slimbot = new Slimbot(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_TOKEN']);
@@ -14,10 +16,10 @@ function sendToTelegram(tweet) {
   var user = tweet.user.screen_name;
   var text = tweet.text;
   var retweeted = tweet.retweeted_status
-  var message = (retweeted ? "THIS IS A RETWEET" : "") + "@" + user + ": " + text
+  var message = (retweeted ? "THIS IS A RETWEET" : "") + "@" + user + ": " + text + "\n--------------------"
 
   console.log(message);
-  //console.log(util.inspect(tweet, false, null))
+  console.log(util.inspect(tweet, false, null))
 
   slimbot.sendMessage(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_CHAT_ID'], message);
 }
@@ -35,6 +37,7 @@ client.stream('statuses/filter', {track: 'announcement,burn,countdown,atomic,maj
   stream.on('data', function(tweet) {
     if (isTweet(tweet)) {
       if (/\$[A-Za-z]{1,5}/.exec(tweet.text)) { // does it have a stock symbol in it i.e. $EDG
+        // can also check tweet.entities.symbols
         sendToTelegram(tweet);
       }
     }

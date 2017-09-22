@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var TwitterPackage = require('twitter');
 const Slimbot = require('slimbot');
 const slimbot = new Slimbot(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_TOKEN']);
