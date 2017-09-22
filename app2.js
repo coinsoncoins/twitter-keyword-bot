@@ -13,8 +13,12 @@ const util = require('util');
 function sendToTelegram(tweet) {
   var user = tweet.user.screen_name;
   var text = tweet.text;
-  var message = "@" + user + ": " + text
+  var retweeted = tweet.retweeted_status
+  var message = (retweeted ? "THIS IS A RETWEET" : "") + "@" + user + ": " + text
+
   console.log(message);
+  //console.log(util.inspect(tweet, false, null))
+
   slimbot.sendMessage(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_CHAT_ID'], message);
 }
 
