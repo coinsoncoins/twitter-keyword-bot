@@ -3,12 +3,13 @@ Description=Twitter Keyword Bot
 After=network.target
 
 [Service]
-ExecStart=/var/www/twitter-keyword-bot/app2.js
+ExecStart=/root/.nvm/versions/node/v8.5.0/bin/node /var/www/twitter-keyword-bot/app2.js
 Restart=always
 User=root
 Group=root
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
+EnvironmentFile=/var/www/twitter-keyword-bot/.env_vars
 WorkingDirectory=/var/www/twitter-keyword-bot
 
 [Install]
