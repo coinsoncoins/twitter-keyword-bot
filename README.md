@@ -7,3 +7,4 @@ references
 - http://techknights.org/workshops/nodejs-twitterbot/
 - https://www.npmjs.com/package/twitter
 - https://dev.twitter.com/streaming/overview
+- https://certsimple.com/blog/deploy-node-on-linux
