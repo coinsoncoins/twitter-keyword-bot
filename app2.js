@@ -12,11 +12,16 @@ const isTweet = function(tweet) {
 
 const util = require('util');
 
-function sendToTelegram(tweet) {
+function filterAndSendToTelegram(tweet) {
+  if (! (isTweet(tweet))) { return; }
+  if (! (tweet.entities && tweet.entities.symbols && tweet.entities.symbols.length > 0)) { return; }
+  var retweeted = tweet.retweeted_status
+  if (retweeted) { return; }
+  var symbols = tweet.entities.symbols.map(function(x) { return x.text; });
   var user = tweet.user.screen_name;
   var text = tweet.text;
-  var retweeted = tweet.retweeted_status
-  var message = (retweeted ? "THIS IS A RETWEET" : "") + "@" + user + ": " + text + "\n--------------------"
+  
+  var message = symbols + ": " + "@" + user + ": " + text + "\n--------------------"
 
   console.log(message);
   console.log(util.inspect(tweet, false, null))
@@ -33,14 +38,9 @@ var secret = {
 var client = new TwitterPackage(secret);
 
 
-client.stream('statuses/filter', {track: 'announcement,burn,countdown,atomic,major'}, function(stream) {
+client.stream('statuses/filter', {track: 'announcement,announcements,burn,burns,burned,countdown,atomic,major'}, function(stream) {
   stream.on('data', function(tweet) {
-    if (isTweet(tweet)) {
-      if (/\$[A-Za-z]{1,5}/.exec(tweet.text)) { // does it have a stock symbol in it i.e. $EDG
-        // can also check tweet.entities.symbols
-        sendToTelegram(tweet);
-      }
-    }
+    filterAndSendToTelegram(tweet);
   });
 
   stream.on('error', function(error) {
