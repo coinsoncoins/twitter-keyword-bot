@@ -14,8 +14,15 @@ describe("Twitter Filterer", function() {
       }
     }
     obj = filterer.filter(tweet);
-    //expect(JSON.stringify(obj)).to.equal(JSON.stringify({text: 'You should buy $EDG', symbols: ['EDG'], name: '@coinsoncoins'}));
     expect(obj).to.deep.equal({text: 'You should buy $EDG', symbols: ['EDG'], user: '@coinsoncoins'});
-  })
+  });
+
+  it("returns nothing for an invalid tweet", function() {
+    tweet = { // no user
+      id_str: '911960555145109504',
+      text: 'You should buy $EDG'
+    }
+    expect(filterer.filter(tweet)).to.not.be.ok;
+  });
 
 });
