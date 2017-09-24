@@ -28,7 +28,7 @@ var secret = {
 var client = new TwitterPackage(secret);
 
 
-client.stream('statuses/filter', {track: 'major,announcement,announcements,burn,burns,burned,countdown,count down,atomic,launch,rebrand,rebranding'}, function(stream) {
+client.stream('statuses/filter', {track: 'major,announcement,announcements,burn,burns,burned,countdown,count down,atomic,launch,rebrand,rebranding,sold out'}, function(stream) {
   stream.on('data', function(tweet) {
     filterAndSendToTelegram(tweet);
   });
