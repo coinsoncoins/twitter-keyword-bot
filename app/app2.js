@@ -3,25 +3,14 @@
 var TwitterPackage = require('twitter');
 const Slimbot = require('slimbot');
 const slimbot = new Slimbot(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_TOKEN']);
-
-_ = require('lodash');
-const isTweet = function(tweet) {
-  return _.isString(tweet.id_str) && _.isString(tweet.text) &&
-  tweet.user && _.isString(tweet.user.screen_name)
-}
+var filterer = require("filterer");
 
 const util = require('util');
 
 function filterAndSendToTelegram(tweet) {
-  if (! (isTweet(tweet))) { return; }
-  if (! (tweet.entities && tweet.entities.symbols && tweet.entities.symbols.length > 0)) { return; }
-  var retweeted = tweet.retweeted_status
-  if (retweeted) { return; }
-  var symbols = tweet.entities.symbols.map(function(x) { return x.text; });
-  var user = tweet.user.screen_name;
-  var text = tweet.text;
+  obj = filterer.filter(tweet);
   
-  var message = symbols + ": " + "@" + user + ": " + text + "\n--------------------"
+  var message = obj.symbols + ": " + "@" + obj.user + ": " + obj.text + "\n--------------------"
 
   console.log(message);
   console.log(util.inspect(tweet, false, null))
