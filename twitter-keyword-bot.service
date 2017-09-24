@@ -3,7 +3,7 @@ Description=Twitter Keyword Bot
 After=network.target
 
 [Service]
-ExecStart=/root/.nvm/versions/node/v8.5.0/bin/node /var/www/twitter-keyword-bot/app2.js
+ExecStart=/var/www/twitter-keyword-bot/app/app2.js
 Restart=always
 User=root
 Group=root
