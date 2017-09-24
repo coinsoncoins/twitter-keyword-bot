@@ -3,12 +3,13 @@
 var TwitterPackage = require('twitter');
 const Slimbot = require('slimbot');
 const slimbot = new Slimbot(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_TOKEN']);
-var filterer = require("filterer");
+var filterer = require("./filterer");
 
 const util = require('util');
 
 function filterAndSendToTelegram(tweet) {
   obj = filterer.filter(tweet);
+  if (!obj) { return; }
   
   var message = obj.symbols + ": " + "@" + obj.user + ": " + obj.text + "\n--------------------"
 
