@@ -7,32 +7,35 @@ const isTweet = function(tweet) {
 
 const util = require('util');
 
-exports.filter = function(tweet) {
-  if (! (isTweet(tweet))) { return; }
-  if (! (tweet.entities && tweet.entities.symbols && tweet.entities.symbols.length > 0)) { return; }
-  var retweeted = tweet.retweeted_status
-  if (retweeted) { return; }
-  var symbols = tweet.entities.symbols.map(function(x) { return x.text; });
-  var user = tweet.user.screen_name;
-  var text = tweet.text;
-  
-  filteredInfo = {symbols: symbols, user: user, text: text};
-  return filteredInfo;
-
-  //console.log(message);
-  //console.log(util.inspect(tweet, false, null))
-
-  //slimbot.sendMessage(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_CHAT_ID'], message);
-}
-
-exports.prepareMessage = function(obj, keywords) {
-  var keyword = "";
-  for (var k in keywords) {
-    if (obj.text.toLowerCase().includes(keywords[k])) {
-      keyword = keywords[k];
-      break
-    }
+class Filterer {
+  constructor(keywords) {
+    if (_.isString(keywords)) { keywords = keywords.split(","); }
+    this.keywords = keywords;
   }
-  obj.keyword = keyword;
-  return obj;
-}
+
+  filter(tweet) {
+    if (! (isTweet(tweet))) { return; }
+    if (! (tweet.entities && tweet.entities.symbols && tweet.entities.symbols.length > 0)) { return; }
+    var retweeted = tweet.retweeted_status
+    if (retweeted) { return; }
+    var symbols = tweet.entities.symbols.map(function(x) { return x.text; });
+    var user = tweet.user.screen_name;
+    var text = tweet.text;
+    
+    var filteredInfo = {symbols: symbols, user: user, text: text, keyword: this.findKeyword(text)};
+    return filteredInfo;
+  }
+
+  findKeyword(text) {
+    var keyword = "";
+    for (var k in this.keywords) {
+      if (text.toLowerCase().includes(this.keywords[k])) {
+        keyword = this.keywords[k];
+        break;
+      }
+    }
+    return keyword;
+  }
+};
+
+module.exports = Filterer;

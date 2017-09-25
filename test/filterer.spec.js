@@ -1,5 +1,8 @@
 var expect    = require("chai").expect;
-var filterer = require("../app/filterer");
+var Filterer = require("../app/filterer");
+
+keywords = "burn,moon,announcement,buy";
+const filterer = new Filterer(keywords);
 
 describe("Twitter Filterer", function() {
   it("has message for tweet with symbols", function() {
@@ -14,7 +17,7 @@ describe("Twitter Filterer", function() {
       }
     }
     obj = filterer.filter(tweet);
-    expect(obj).to.deep.equal({text: 'You should buy $EDG', symbols: ['EDG'], user: '@coinsoncoins'});
+    expect(obj).to.deep.equal({text: 'You should buy $EDG', symbols: ['EDG'], user: '@coinsoncoins', keyword: "buy"});
   });
 
   it("returns nothing for an invalid tweet", function() {
@@ -37,8 +40,6 @@ describe("Twitter Filterer", function() {
       }
     }
     obj = filterer.filter(tweet);
-    obj = filterer.prepareMessage(obj, ["burn"]);
-    console.log(obj);
     expect(obj.keyword).to.equal("burn");
   });
 
