@@ -6,8 +6,11 @@ const slimbot = new Slimbot(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_TOKEN']);
 var Filterer = require("./filterer");
 
 const util = require('util');
-
-var keywords = 'major,announce,announces,announcement,announcements,burn,burns,burned,burnt,countdown,count down,atomic,launch,rebrand,rebranding,sold out,leak,leaked,buy wall,buywall,days left,days until,moon,moons';
+var fs = require('fs');
+ 
+var keywords = fs.readFileSync('./app/keywords.txt', 'utf8').toString().split("\n");
+keywords = keywords.filter(function(n) { return n != '' && n != undefined });
+console.log(keywords);
 
 const filterer = new Filterer(keywords);
 
@@ -32,7 +35,7 @@ var secret = {
 var client = new TwitterPackage(secret);
 
 
-client.stream('statuses/filter', {track: keywords}, function(stream) {
+client.stream('statuses/filter', {track: keywords.join(",")}, function(stream) {
   stream.on('data', function(tweet) {
     filterAndSendToTelegram(tweet);
   });
