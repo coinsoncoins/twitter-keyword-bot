@@ -4,14 +4,11 @@ var TwitterPackage = require('twitter');
 const Slimbot = require('slimbot');
 const slimbot = new Slimbot(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_TOKEN']);
 var Filterer = require("./filterer");
+var ListFileReader = require("./list-file-reader");
 
 const util = require('util');
-var fs = require('fs');
- 
-var keywords = fs.readFileSync('./app/keywords.txt', 'utf8').toString().split("\n");
-keywords = keywords.filter(function(n) { return n != '' && n != undefined });
-console.log(keywords);
 
+keywords = ListFileReader.readAsArray('./app/keywords.list');
 const filterer = new Filterer(keywords);
 
 function filterAndSendToTelegram(tweet) {
@@ -42,5 +39,6 @@ client.stream('statuses/filter', {track: keywords.join(",")}, function(stream) {
 
   stream.on('error', function(error) {
     console.log(error);
+    slimbot.sendMessage(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_CHAT_ID'], error);
   });
 });
