@@ -4,7 +4,10 @@
   "description": "alerts when a particular keyword is tweeted",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "start": "systemctl start twitter-keyword-bot",
+    "stop": "systemctl stop twitter-keyword-bot",
+    "restart": "systemctl restart twitter-keyword-bot"
   },
   "repository": {
     "type": "git",
