@@ -4,7 +4,7 @@ var Filterer = require("../app/filterer");
 keywords = ["burn", "moon", "announcement", "buy"];
 symbolsToIgnore = ["usd", "spy"];
 usersToIgnore = ["stocknewsbot", "annoyingnewsfeed"];
-textToIgnore = ["major shareholder", "public offering"];
+textToIgnore = ["insider selling", "public offering"];
 
 const filterer = new Filterer(keywords, symbolsToIgnore, usersToIgnore, textToIgnore);
 
@@ -67,10 +67,25 @@ describe("Twitter Filterer", function() {
       id_str: '911960555145109504',
       text: 'You should buy $EDG',
       user: {
-        screen_name: 'stocknewsbot'
+        screen_name: 'stocknewsBOT'
       },
       entities: {
         symbols: [ { text: 'EDG', indices: [ 15, 19 ] } ]
+      }
+    }
+    obj = filterer.filter(tweet);
+    expect(obj).to.not.be.ok;
+  });
+
+  it("returns nothing for text in the textToIgnore list", function() {
+    tweet = {
+      id_str: '911960555145109504',
+      text: 'Insider Selling: Halcon Resources Corporation $HK Major Shareholder Sells 830,000 Shares of Stock',
+      user: {
+        screen_name: 'coinsoncoins'
+      },
+      entities: {
+        symbols: [ { text: 'HK', indices: [ 15, 19 ] } ]
       }
     }
     obj = filterer.filter(tweet);

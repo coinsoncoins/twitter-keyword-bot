@@ -24,8 +24,9 @@ class Filterer {
     var symbols = tweet.entities.symbols.map(function(x) { return x.text; });
     if (this.ignoreSymbol(symbols)) { return; }
     var user = tweet.user.screen_name;
-    if (this.usersToIgnore.includes(user)) { return; }
+    if (this.usersToIgnore.includes(user.toLowerCase())) { return; }
     var text = tweet.text;
+    if (this.ignoreText(text)) { return; }
     
     var filteredInfo = {symbols: symbols, user: user, text: text, keyword: this.findKeyword(text)};
     return filteredInfo;
@@ -50,6 +51,16 @@ class Filterer {
     }
     return false;
   }
+
+  ignoreText(text) {
+    for (var k in textToIgnore) {
+      if (text.toLowerCase().includes(textToIgnore[k])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 };
 
 module.exports = Filterer;
