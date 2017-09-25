@@ -7,11 +7,15 @@ var filterer = require("./filterer");
 
 const util = require('util');
 
+var keywords = 'major,announce,announces,announcement,announcements,burn,burns,burned,burnt,countdown,count down,atomic,launch,rebrand,rebranding,sold out,leak,leaked,buy wall,buywall,days left,days until,moon,moons';
+var keywordsArr = keywords.split(",");
+
 function filterAndSendToTelegram(tweet) {
   obj = filterer.filter(tweet);
   if (!obj) { return; }
   
-  var message = obj.symbols + ": " + "@" + obj.user + ": " + obj.text + "\n--------------------"
+  obj = filterer.prepareMessage(obj, keywordsArr);
+  var message = obj.symbols + "[" + obj.keyword + "] " + ": " + "@" + obj.user + ": " + obj.text + "\n--------------------"
 
   console.log(message);
   console.log(util.inspect(tweet, false, null))
@@ -28,7 +32,7 @@ var secret = {
 var client = new TwitterPackage(secret);
 
 
-client.stream('statuses/filter', {track: 'major,announcement,announcements,burn,burns,burned,burnt,countdown,count down,atomic,launch,rebrand,rebranding,sold out,leak,leaked'}, function(stream) {
+client.stream('statuses/filter', {track: keywords}, function(stream) {
   stream.on('data', function(tweet) {
     filterAndSendToTelegram(tweet);
   });

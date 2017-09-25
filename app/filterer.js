@@ -16,7 +16,7 @@ exports.filter = function(tweet) {
   var user = tweet.user.screen_name;
   var text = tweet.text;
   
-  filteredInfo = { symbols: symbols, user: user, text: text}
+  filteredInfo = {symbols: symbols, user: user, text: text};
   return filteredInfo;
 
   //console.log(message);
@@ -25,6 +25,14 @@ exports.filter = function(tweet) {
   //slimbot.sendMessage(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_CHAT_ID'], message);
 }
 
-function formatFilteredMessage(obj) {
-  return obj.symbols + ": " + "@" + obj.user + ": " + obj.text + "\n--------------------"
+exports.prepareMessage = function(obj, keywords) {
+  var keyword = "";
+  for (var k in keywords) {
+    if (obj.text.toLowerCase().includes(keywords[k])) {
+      keyword = keywords[k];
+      break
+    }
+  }
+  obj.keyword = keyword;
+  return obj;
 }

@@ -25,4 +25,21 @@ describe("Twitter Filterer", function() {
     expect(filterer.filter(tweet)).to.not.be.ok;
   });
 
+  it("passes back the right keyword", function() {
+    tweet = {
+      id_str: '911960555145109504',
+      text: 'You should burn $EDG',
+      user: {
+        screen_name: '@coinsoncoins'
+      },
+      entities: {
+        symbols: [ { text: 'EDG', indices: [ 15, 19 ] } ]
+      }
+    }
+    obj = filterer.filter(tweet);
+    obj = filterer.prepareMessage(obj, ["burn"]);
+    console.log(obj);
+    expect(obj.keyword).to.equal("burn");
+  });
+
 });
