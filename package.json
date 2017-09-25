@@ -7,7 +7,8 @@
     "test": "./node_modules/.bin/mocha --reporter spec",
     "start": "systemctl start twitter-keyword-bot",
     "stop": "systemctl stop twitter-keyword-bot",
-    "restart": "systemctl restart twitter-keyword-bot"
+    "restart": "systemctl restart twitter-keyword-bot",
+    "journal": "journalctl --follow -u twitter-keyword-bot"
   },
   "repository": {
     "type": "git",
