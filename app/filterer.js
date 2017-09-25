@@ -8,10 +8,12 @@ const isTweet = function(tweet) {
 const util = require('util');
 
 class Filterer {
-  constructor(keywords, symbolsToIgnore) {
+  constructor(keywords, symbolsToIgnore, usersToIgnore, textToIgnore) {
     if (_.isString(keywords)) { keywords = keywords.split(","); }
     this.keywords = keywords;
-    this.symbolsToIgnore = symbolsToIgnore.map(function(x) { return x.toLowerCase(); })
+    this.symbolsToIgnore = symbolsToIgnore.map(function(n) { return n.toLowerCase(); });
+    this.usersToIgnore = usersToIgnore;
+    this.textToIgnore = textToIgnore;
   }
 
   filter(tweet) {
@@ -22,6 +24,7 @@ class Filterer {
     var symbols = tweet.entities.symbols.map(function(x) { return x.text; });
     if (this.ignoreSymbol(symbols)) { return; }
     var user = tweet.user.screen_name;
+    if (this.usersToIgnore.includes(user)) { return; }
     var text = tweet.text;
     
     var filteredInfo = {symbols: symbols, user: user, text: text, keyword: this.findKeyword(text)};

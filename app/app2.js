@@ -10,7 +10,9 @@ const util = require('util');
 
 keywords = ListFileReader.readAsArray('./app/keywords.list');
 symbolsToIgnore = ListFileReader.readAsArray('./app/symbols-to-ignore.list');
-const filterer = new Filterer(keywords, symbolsToIgnore);
+textToIgnore = ListFileReader.readAsArray('./app/text-to-ignore.list');
+usersToIgnore = ListFileReader.readAsArray('./app/users-to-ignore.list');
+const filterer = new Filterer(keywords, symbolsToIgnore, usersToIgnore, textToIgnore);
 
 function filterAndSendToTelegram(tweet) {
   obj = filterer.filter(tweet);
