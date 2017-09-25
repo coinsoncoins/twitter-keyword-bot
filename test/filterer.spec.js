@@ -1,8 +1,9 @@
 var expect    = require("chai").expect;
 var Filterer = require("../app/filterer");
 
-keywords = "burn,moon,announcement,buy";
-const filterer = new Filterer(keywords);
+keywords = ["burn", "moon", "announcement", "buy"];
+symbolsToIgnore = ["USD", "SPY"];
+const filterer = new Filterer(keywords, symbolsToIgnore);
 
 describe("Twitter Filterer", function() {
   it("has message for tweet with symbols", function() {
@@ -41,6 +42,21 @@ describe("Twitter Filterer", function() {
     }
     obj = filterer.filter(tweet);
     expect(obj.keyword).to.equal("burn");
+  });
+
+  it("returns nothing for symbol in the symbolsToIgnore list", function() {
+    tweet = {
+      id_str: '911960555145109504',
+      text: '$USD is strong',
+      user: {
+        screen_name: '@coinsoncoins'
+      },
+      entities: {
+        symbols: [ { text: 'BTC', indices: [ 0, 4 ]}, { text: 'USD', indices: [ 0, 4 ] } ]
+      }
+    }
+    obj = filterer.filter(tweet);
+    expect(obj).to.not.be.ok;
   });
 
 });

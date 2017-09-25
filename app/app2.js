@@ -9,7 +9,8 @@ var ListFileReader = require("./list-file-reader");
 const util = require('util');
 
 keywords = ListFileReader.readAsArray('./app/keywords.list');
-const filterer = new Filterer(keywords);
+symbolsToIgnore = ListFileReader.readAsArray('./app/symbols-to-ignore.list');
+const filterer = new Filterer(keywords, symbolsToIgnore);
 
 function filterAndSendToTelegram(tweet) {
   obj = filterer.filter(tweet);

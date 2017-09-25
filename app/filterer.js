@@ -8,9 +8,10 @@ const isTweet = function(tweet) {
 const util = require('util');
 
 class Filterer {
-  constructor(keywords) {
+  constructor(keywords, symbolsToIgnore) {
     if (_.isString(keywords)) { keywords = keywords.split(","); }
     this.keywords = keywords;
+    this.symbolsToIgnore = symbolsToIgnore.map(function(x) { return x.toLowerCase(); })
   }
 
   filter(tweet) {
@@ -19,6 +20,7 @@ class Filterer {
     var retweeted = tweet.retweeted_status
     if (retweeted) { return; }
     var symbols = tweet.entities.symbols.map(function(x) { return x.text; });
+    if (this.ignoreSymbol(symbols)) { return; }
     var user = tweet.user.screen_name;
     var text = tweet.text;
     
@@ -35,6 +37,15 @@ class Filterer {
       }
     }
     return keyword;
+  }
+
+  ignoreSymbol(symbols) {
+    for (var k in symbols) {
+      if (this.symbolsToIgnore.includes(symbols[k].toLowerCase())) {
+        return true;
+      }
+    }
+    return false;
   }
 };
 
