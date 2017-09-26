@@ -24,12 +24,11 @@ class Filterer {
     if (retweeted) { return; }
     var symbols = tweet.entities.symbols.map(function(x) { return x.text.toUpperCase(); });
     if (!this.areSymbolsWhitelisted(symbols)) { return; }
-    // if (this.ignoreSymbol(symbols)) { return; }
+    if (this.ignoreSymbol(symbols)) { return; }
     var user = tweet.user.screen_name;
     if (this.usersToIgnore.includes(user.toLowerCase())) { return; }
     var text = tweet.text;
-
-    // if (this.ignoreText(text)) { return; }
+    if (this.ignoreText(text)) { return; }
     
     var filteredInfo = {symbols: symbols, user: user, text: text, keyword: this.findKeyword(text)};
 
@@ -63,7 +62,8 @@ class Filterer {
 
   ignoreSymbol(symbols) {
     for (var k in symbols) {
-      if (this.symbolsToIgnore.includes(symbols[k].toLowerCase())) {
+      console.log
+      if (this.symbolsToIgnore.includes(symbols[k].toUpperCase())) {
         return true;
       }
     }

@@ -67,11 +67,13 @@ describe("Twitter Filterer", function() {
   });
 
 
-  // it("returns nothing for symbol in the symbolsToIgnore list", function() {
-  //   tweet = createTweet();
-  //   tweet.entities.symbols.push({ text: 'USD', indices: [ 0, 4 ] });
-  //   expect(filterer.filter(tweet)).to.not.be.ok;
-  // });
+  it("returns nothing for symbol in the symbolsToIgnore list", function() {
+    tweet = createTweet();
+    tweet.entities.symbols.push({ text: 'USD', indices: [ 0, 4 ] });
+    expect(filterer.filter(tweet)).to.not.be.ok;
+    tweet.entities.symbols[1].text = 'usd';
+    expect(filterer.filter(tweet)).to.not.be.ok;
+  });
 
 
   it("returns nothing for user in the usersToIgnore list", function() {
@@ -80,19 +82,10 @@ describe("Twitter Filterer", function() {
     expect(filterer.filter(tweet)).to.not.be.ok;
   });
 
-  // it("returns nothing for text in the textToIgnore list", function() {
-  //   tweet = {
-  //     id_str: '911960555145109504',
-  //     text: 'Insider Selling: Halcon Resources Corporation $HK Major Shareholder Sells 830,000 Shares of Stock',
-  //     user: {
-  //       screen_name: 'coinsoncoins'
-  //     },
-  //     entities: {
-  //       symbols: [ { text: 'HK', indices: [ 15, 19 ] } ]
-  //     }
-  //   }
-  //   obj = filterer.filter(tweet);
-  //   expect(obj).to.not.be.ok;
-  // });
+  it("returns nothing for text in the textToIgnore list", function() {
+    tweet = createTweet();
+    tweet.text = 'Insider Selling: Halcon Resources Corporation $HK Major Shareholder Sells 830,000 Shares of Stock';
+    expect(filterer.filter(tweet)).to.not.be.ok;
+  });
 
 });
