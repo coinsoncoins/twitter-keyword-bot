@@ -5,10 +5,14 @@ const Slimbot = require('slimbot');
 const slimbot = new Slimbot(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_TOKEN']);
 var Filterer = require("./filterer");
 var ListFileReader = require("./list-file-reader");
+var config = require('./config.json'); 
 
 const util = require('util');
 
-keywords = ListFileReader.readAsArray('./app/keywords.list');
+// console.log(fs.readFileSync('./app/config.json', 'utf8').toString())
+// var config = JSON.parse(fs.readFileSync('./app/config.json', 'utf8').toString());
+
+keywords = ListFileReader.readAsArray(config["keywordFile"]);
 whitelistedSymbols = ListFileReader.readAsArray('./app/whitelisted-symbols.list');
 whitelistedSymbols2 = ListFileReader.readAsArray('./app/whitelisted-symbols-addnl.list');
 whitelistedSymbols = whitelistedSymbols.concat(whitelistedSymbols2);
