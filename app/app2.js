@@ -9,8 +9,8 @@ var ListFileReader = require("./list-file-reader");
 const util = require('util');
 
 keywords = ListFileReader.readAsArray('./app/keywords.list');
-whitelistedSymbols = ListFileReader.readAsArray('./app/symbols.list');
-whitelistedSymbols2 = ListFileReader.readAsArray('./app/symbols-additional.list');
+whitelistedSymbols = ListFileReader.readAsArray('./app/whitelisted-symbols.list');
+whitelistedSymbols2 = ListFileReader.readAsArray('./app/whitelisted-symbols-addnl.list');
 whitelistedSymbols = whitelistedSymbols.concat(whitelistedSymbols2);
 symbolsToIgnore = ListFileReader.readAsArray('./app/symbols-to-ignore.list');
 textToIgnore = ListFileReader.readAsArray('./app/text-to-ignore.list');
