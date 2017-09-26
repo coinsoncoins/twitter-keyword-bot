@@ -14,14 +14,16 @@ var client = new TwitterPackage(secret);
 
 promises = [];
 promises[0] = client.get('lists/members', {slug: 'coins', owner_screen_name: 'coinsoncoins', count: 5000})
-promises[1] = client.get('lists/members', {slug: 'coins-5-50', owner_screen_name: 'coinsoncoins'})
-promises[2] = client.get('lists/members', {slug: 'coins-50-200', owner_screen_name: 'coinsoncoins'})
+promises[1] = client.get('lists/members', {slug: 'coins-5-50', owner_screen_name: 'coinsoncoins', count: 5000})
+promises[2] = client.get('lists/members', {slug: 'coins-50-200', owner_screen_name: 'coinsoncoins', count: 5000})
 
 Promise.all(promises)
 .then(values => {
   set = new Set()
   for(var i=0; i<values.length; i++) {
     names = values[i].users.map(function(u) { return u.screen_name; });
+
+    fs.writeFileSync(__dirname + `/data/tmp/official-accounts${i}.list`, names.join("\n"));
 
     names.forEach(function(e) {
       set.add(e);
