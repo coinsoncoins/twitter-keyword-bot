@@ -8,10 +8,11 @@ const isTweet = function(tweet) {
 const util = require('util');
 
 class Filterer {
-  constructor(keywords, symbolsToIgnore, usersToIgnore, textToIgnore) {
+  constructor(keywords, whitelistedSymbols, symbolsToIgnore, usersToIgnore, textToIgnore) {
     if (_.isString(keywords)) { keywords = keywords.split(","); }
     this.keywords = keywords;
-    this.symbolsToIgnore = symbolsToIgnore.map(function(n) { return n.toLowerCase(); });
+    this.whitelistedSymbols = whitelistedSymbols.map(function(n) { return n.toUpperCase(); });
+    this.symbolsToIgnore = symbolsToIgnore.map(function(n) { return n.toUpperCase(); });
     this.usersToIgnore = usersToIgnore;
     this.textToIgnore = textToIgnore;
   }
@@ -21,15 +22,32 @@ class Filterer {
     if (! (tweet.entities && tweet.entities.symbols && tweet.entities.symbols.length > 0)) { return; }
     var retweeted = tweet.retweeted_status
     if (retweeted) { return; }
-    var symbols = tweet.entities.symbols.map(function(x) { return x.text; });
-    if (this.ignoreSymbol(symbols)) { return; }
+    var symbols = tweet.entities.symbols.map(function(x) { return x.text.toUpperCase(); });
+    if (!this.areSymbolsWhitelisted(symbols)) { return; }
+    // if (this.ignoreSymbol(symbols)) { return; }
     var user = tweet.user.screen_name;
     if (this.usersToIgnore.includes(user.toLowerCase())) { return; }
     var text = tweet.text;
-    if (this.ignoreText(text)) { return; }
+
+    // if (this.ignoreText(text)) { return; }
     
     var filteredInfo = {symbols: symbols, user: user, text: text, keyword: this.findKeyword(text)};
+
+    if (tweet.quoted_status && tweet.quoted_status.text) {
+      filteredInfo.quotedText = tweet.quoted_status.text;
+      filteredInfo.quotedKeyword = this.findKeyword(filteredInfo.quotedText);
+    }
+
     return filteredInfo;
+  }
+
+  areSymbolsWhitelisted(symbols) {
+    for (var k in symbols) {
+      if (this.whitelistedSymbols.includes(symbols[k])) {
+        return true;
+      }
+    }
+    return false;
   }
 
   findKeyword(text) {

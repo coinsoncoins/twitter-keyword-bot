@@ -9,16 +9,23 @@ var ListFileReader = require("./list-file-reader");
 const util = require('util');
 
 keywords = ListFileReader.readAsArray('./app/keywords.list');
+whitelistedSymbols = ListFileReader.readAsArray('./app/symbols.list');
+whitelistedSymbols2 = ListFileReader.readAsArray('./app/symbols-additional.list');
+whitelistedSymbols = whitelistedSymbols.concat(whitelistedSymbols2);
 symbolsToIgnore = ListFileReader.readAsArray('./app/symbols-to-ignore.list');
 textToIgnore = ListFileReader.readAsArray('./app/text-to-ignore.list');
 usersToIgnore = ListFileReader.readAsArray('./app/users-to-ignore.list');
-const filterer = new Filterer(keywords, symbolsToIgnore, usersToIgnore, textToIgnore);
+const filterer = new Filterer(keywords, whitelistedSymbols, symbolsToIgnore, usersToIgnore, textToIgnore);
 
 function filterAndSendToTelegram(tweet) {
   obj = filterer.filter(tweet);
   if (!obj) { return; }
+
+  var keyword = obj.keyword;
+  if (!keyword) { keyword = obj.quotedKeyword + "-q"; }
+  var message = `${obj.symbols}[${keyword}] :@${obj.user}: ${obj.text}\n-----------------`
   
-  var message = obj.symbols + "[" + obj.keyword + "] " + ": " + "@" + obj.user + ": " + obj.text + "\n--------------------"
+  //var message = obj.symbols + "[" + obj.keyword + "] " + ": " + "@" + obj.user + ": " + obj.text + "\n--------------------"
 
   console.log(message);
   console.log(util.inspect(tweet, false, null))
