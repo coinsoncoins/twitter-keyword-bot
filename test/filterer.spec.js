@@ -3,11 +3,12 @@ var Filterer = require("../app/filterer");
 
 keywords = ["burn", "moon", "announcement", "buy"];
 whitelistedSymbols = ["EDG"];
+officialAccounts = ["bluecoin", "redcoin"];
 symbolsToIgnore = ["USD", "SPY"];
 usersToIgnore = ["stocknewsbot", "annoyingnewsfeed"];
 textToIgnore = ["insider selling", "public offering"];
 
-const filterer = new Filterer(keywords, whitelistedSymbols, symbolsToIgnore, usersToIgnore, textToIgnore);
+const filterer = new Filterer(keywords, whitelistedSymbols, officialAccounts, symbolsToIgnore, usersToIgnore, textToIgnore);
 
 createTweet = function() {
   tweet = { // this tweet should return an object
@@ -26,10 +27,24 @@ createTweet = function() {
 describe("Twitter Filterer", function() {
   it("has message for tweet with symbols in whitelist", function() {
     tweet = createTweet();
-    obj = filterer.filter(tweet);
-    expect(obj).to.deep.equal({text: 'You should buy $EDG', symbols: ['EDG'], user: 'coinsoncoins', keyword: "buy"});
+    expect(filterer.filter(tweet)).to.deep.equal({text: 'You should buy $EDG', symbols: ['EDG'], user: 'coinsoncoins', keyword: "buy", officialAccount: false});
     tweet.entities.symbols[0].text = tweet.entities.symbols[0].text.toLowerCase();
-    expect(obj).to.deep.equal({text: 'You should buy $EDG', symbols: ['EDG'], user: 'coinsoncoins', keyword: "buy"});
+    expect(filterer.filter(tweet)).to.deep.equal({text: 'You should buy $EDG', symbols: ['EDG'], user: 'coinsoncoins', keyword: "buy", officialAccount: false});
+  });
+
+  it("has message if from the official account, even if no whitelisted symbol", function() {
+    tweet = createTweet();
+    tweet.user.screen_name = "bluecoin";
+    console.log(tweet.user.screen_name)
+    tweet.text = "We're scheduling a burn";
+    delete tweet.entities;
+    expect(filterer.filter(tweet)).to.deep.equal({text: "We're scheduling a burn", symbols: [], user: 'bluecoin', 
+      keyword: 'burn', officialAccount: true});
+    tweet.entities = { symbols: [ { text: 'EDG', indices: [ 15, 19 ] } ] };
+    tweet.text = 'You should buy $EDG';
+    expect(filterer.filter(tweet)).to.deep.equal({text: "You should buy $EDG", symbols: ['EDG'], 
+      user: 'bluecoin', keyword: 'buy', officialAccount: true});
+ 
   });
 
   it("returns nothing for an invalid tweet", function() {
@@ -45,25 +60,11 @@ describe("Twitter Filterer", function() {
   });
 
   it("passes back the right keyword if it's in the quoted_status", function() {
-    tweet = {
-      id_str: '911960555145109504',
-      text: 'Hey look at this $EDG',
-      user: {
-        screen_name: 'coinsoncoins'
-      },
-      quoted_status: {
-        text: "You should buy $EDG"
-      },
-      entities: {
-        symbols: [ { text: 'EDG', indices: [ 15, 19 ] } ]
-      }
-    }
     tweet = createTweet();
     tweet.text = "hey";
     tweet.quoted_status = { text: "You should buy $EDG" };
-    obj = filterer.filter(tweet);
-    expect(obj).to.deep.equal({text: 'hey', symbols: ['EDG'], user: 'coinsoncoins', 
-      keyword: "", quotedText: "You should buy $EDG", quotedKeyword: "buy"});
+    expect(filterer.filter(tweet)).to.deep.equal({text: 'hey', symbols: ['EDG'], user: 'coinsoncoins', 
+      keyword: "", quotedText: "You should buy $EDG", quotedKeyword: "buy", officialAccount: false});
   });
 
 

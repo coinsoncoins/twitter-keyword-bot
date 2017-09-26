@@ -16,10 +16,11 @@ keywords = ListFileReader.readAsArray(config["keywordFile"]);
 whitelistedSymbols = ListFileReader.readAsArray('./app/data/whitelisted-symbols.list');
 whitelistedSymbols2 = ListFileReader.readAsArray('./app/data/whitelisted-symbols-addnl.list');
 whitelistedSymbols = whitelistedSymbols.concat(whitelistedSymbols2);
+officialAccounts = ListFileReader.readAsArray('./app/data/official-accounts.list')
 symbolsToIgnore = ListFileReader.readAsArray('./app/data/symbols-to-ignore.list');
 textToIgnore = ListFileReader.readAsArray('./app/data/text-to-ignore.list');
 usersToIgnore = ListFileReader.readAsArray('./app/data/users-to-ignore.list');
-const filterer = new Filterer(keywords, whitelistedSymbols, symbolsToIgnore, usersToIgnore, textToIgnore);
+const filterer = new Filterer(keywords, whitelistedSymbols, officialAccounts, symbolsToIgnore, usersToIgnore, textToIgnore);
 
 function filterAndSendToTelegram(tweet) {
   obj = filterer.filter(tweet);

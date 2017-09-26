@@ -8,10 +8,11 @@ const isTweet = function(tweet) {
 const util = require('util');
 
 class Filterer {
-  constructor(keywords, whitelistedSymbols, symbolsToIgnore, usersToIgnore, textToIgnore) {
+  constructor(keywords, whitelistedSymbols, officialAccounts, symbolsToIgnore, usersToIgnore, textToIgnore) {
     if (_.isString(keywords)) { keywords = keywords.split(","); }
     this.keywords = keywords;
     this.whitelistedSymbols = whitelistedSymbols.map(function(n) { return n.toUpperCase(); });
+    this.officialAccounts = officialAccounts;
     this.symbolsToIgnore = symbolsToIgnore.map(function(n) { return n.toUpperCase(); });
     this.usersToIgnore = usersToIgnore;
     this.textToIgnore = textToIgnore;
@@ -19,18 +20,24 @@ class Filterer {
 
   filter(tweet) {
     if (! (isTweet(tweet))) { return; }
-    if (! (tweet.entities && tweet.entities.symbols && tweet.entities.symbols.length > 0)) { return; }
-    var retweeted = tweet.retweeted_status
-    if (retweeted) { return; }
-    var symbols = tweet.entities.symbols.map(function(x) { return x.text.toUpperCase(); });
-    if (!this.areSymbolsWhitelisted(symbols)) { return; }
-    if (this.ignoreSymbol(symbols)) { return; }
+    if (tweet.retweeted_status) { return; } // dont process retweets
     var user = tweet.user.screen_name;
-    if (this.usersToIgnore.includes(user.toLowerCase())) { return; }
     var text = tweet.text;
+    var symbols = []
+    if (tweet.entities && tweet.entities.symbols && tweet.entities.symbols.length > 0) {
+      symbols = tweet.entities.symbols.map(function(x) { return x.text.toUpperCase(); });
+    }
+
+    var bFromOfficialAccount = this.isFromOfficialAccount(user);
+    var bSymbolsAreWhitelisted = this.areSymbolsWhitelisted(symbols);
+    if (!bFromOfficialAccount && !bSymbolsAreWhitelisted) { return; }
+
+    if (this.ignoreSymbol(symbols)) { return; }
+    if (this.usersToIgnore.includes(user.toLowerCase())) { return; }
     if (this.ignoreText(text)) { return; }
     
-    var filteredInfo = {symbols: symbols, user: user, text: text, keyword: this.findKeyword(text)};
+    var filteredInfo = {symbols: symbols, user: user, text: text, 
+      keyword: this.findKeyword(text), officialAccount: bFromOfficialAccount};
 
     if (tweet.quoted_status && tweet.quoted_status.text) {
       filteredInfo.quotedText = tweet.quoted_status.text;
@@ -47,6 +54,10 @@ class Filterer {
       }
     }
     return false;
+  }
+
+  isFromOfficialAccount(user) {
+    return this.officialAccounts.includes(user);
   }
 
   findKeyword(text) {
