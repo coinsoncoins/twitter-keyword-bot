@@ -13,12 +13,12 @@ const util = require('util');
 // var config = JSON.parse(fs.readFileSync('./app/config.json', 'utf8').toString());
 
 keywords = ListFileReader.readAsArray(config["keywordFile"]);
-whitelistedSymbols = ListFileReader.readAsArray('./app/whitelisted-symbols.list');
-whitelistedSymbols2 = ListFileReader.readAsArray('./app/whitelisted-symbols-addnl.list');
+whitelistedSymbols = ListFileReader.readAsArray('./app/data/whitelisted-symbols.list');
+whitelistedSymbols2 = ListFileReader.readAsArray('./app/data/whitelisted-symbols-addnl.list');
 whitelistedSymbols = whitelistedSymbols.concat(whitelistedSymbols2);
-symbolsToIgnore = ListFileReader.readAsArray('./app/symbols-to-ignore.list');
-textToIgnore = ListFileReader.readAsArray('./app/text-to-ignore.list');
-usersToIgnore = ListFileReader.readAsArray('./app/users-to-ignore.list');
+symbolsToIgnore = ListFileReader.readAsArray('./app/data/symbols-to-ignore.list');
+textToIgnore = ListFileReader.readAsArray('./app/data/text-to-ignore.list');
+usersToIgnore = ListFileReader.readAsArray('./app/data/users-to-ignore.list');
 const filterer = new Filterer(keywords, whitelistedSymbols, symbolsToIgnore, usersToIgnore, textToIgnore);
 
 function filterAndSendToTelegram(tweet) {
