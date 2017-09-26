@@ -34,16 +34,16 @@ describe("Twitter Filterer", function() {
 
   it("has message if from the official account, even if no whitelisted symbol", function() {
     tweet = createTweet();
-    tweet.user.screen_name = "bluecoin";
+    tweet.user.screen_name = "BlueCOIN"; // capitalization is different than in officialAccounts
     console.log(tweet.user.screen_name)
     tweet.text = "We're scheduling a burn";
     delete tweet.entities;
-    expect(filterer.filter(tweet)).to.deep.equal({text: "We're scheduling a burn", symbols: [], user: 'bluecoin', 
+    expect(filterer.filter(tweet)).to.deep.equal({text: "We're scheduling a burn", symbols: [], user: 'BlueCOIN', 
       keyword: 'burn', officialAccount: true});
     tweet.entities = { symbols: [ { text: 'EDG', indices: [ 15, 19 ] } ] };
     tweet.text = 'You should buy $EDG';
     expect(filterer.filter(tweet)).to.deep.equal({text: "You should buy $EDG", symbols: ['EDG'], 
-      user: 'bluecoin', keyword: 'buy', officialAccount: true});
+      user: 'BlueCOIN', keyword: 'buy', officialAccount: true});
  
   });
 

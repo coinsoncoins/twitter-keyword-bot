@@ -12,7 +12,7 @@ class Filterer {
     if (_.isString(keywords)) { keywords = keywords.split(","); }
     this.keywords = keywords;
     this.whitelistedSymbols = whitelistedSymbols.map(function(n) { return n.toUpperCase(); });
-    this.officialAccounts = officialAccounts;
+    this.officialAccounts = officialAccounts.map(function(n) { return n.toLowerCase(); });
     this.symbolsToIgnore = symbolsToIgnore.map(function(n) { return n.toUpperCase(); });
     this.usersToIgnore = usersToIgnore;
     this.textToIgnore = textToIgnore;
@@ -32,9 +32,11 @@ class Filterer {
     var bSymbolsAreWhitelisted = this.areSymbolsWhitelisted(symbols);
     if (!bFromOfficialAccount && !bSymbolsAreWhitelisted) { return; }
 
-    if (this.ignoreSymbol(symbols)) { return; }
-    if (this.usersToIgnore.includes(user.toLowerCase())) { return; }
-    if (this.ignoreText(text)) { return; }
+    if(!bFromOfficialAccount) { // if it's from an official account, we want to read everything
+      if (this.ignoreSymbol(symbols)) { return; }
+      if (this.usersToIgnore.includes(user.toLowerCase())) { return; }
+      if (this.ignoreText(text)) { return; }
+    }
     
     var filteredInfo = {symbols: symbols, user: user, text: text, 
       keyword: this.findKeyword(text), officialAccount: bFromOfficialAccount};
@@ -57,7 +59,7 @@ class Filterer {
   }
 
   isFromOfficialAccount(user) {
-    return this.officialAccounts.includes(user);
+    return this.officialAccounts.includes(user.toLowerCase());
   }
 
   findKeyword(text) {

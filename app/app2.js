@@ -22,7 +22,7 @@ symbolsToIgnore = ListFileReader.readAsArray('./app/data/symbols-to-ignore.list'
 textToIgnore = ListFileReader.readAsArray('./app/data/text-to-ignore.list');
 usersToIgnore = ListFileReader.readAsArray('./app/data/users-to-ignore.list');
 const filterer = new Filterer(keywords, whitelistedSymbols, officialAccounts, symbolsToIgnore, usersToIgnore, textToIgnore);
-
+console.log(officialAccounts)
 function filterAndSendToTelegram(tweet) {
   obj = filterer.filter(tweet);
   if (!obj) { return; }
