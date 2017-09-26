@@ -5,6 +5,7 @@ const Slimbot = require('slimbot');
 const slimbot = new Slimbot(process.env['TWITTER_KEYWORD_BOT_TELEGRAM_TOKEN']);
 var Filterer = require("./filterer");
 var ListFileReader = require("./list-file-reader");
+var MessageCreator = require('./message-creator');
 var config = require('./config.json'); 
 
 const util = require('util');
@@ -26,12 +27,8 @@ function filterAndSendToTelegram(tweet) {
   obj = filterer.filter(tweet);
   if (!obj) { return; }
 
-  var keyword = obj.keyword;
-  if (!keyword) { keyword = obj.quotedKeyword + "-q"; }
-  var message = `${obj.symbols}[${keyword}] :@${obj.user}: ${obj.text}\n-----------------`
+  message = MessageCreator.create(obj);
   
-  //var message = obj.symbols + "[" + obj.keyword + "] " + ": " + "@" + obj.user + ": " + obj.text + "\n--------------------"
-
   console.log(message);
   console.log(util.inspect(tweet, false, null))
 
