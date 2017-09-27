@@ -26,6 +26,7 @@ class Filterer {
     var symbols = []
     if (tweet.entities && tweet.entities.symbols && tweet.entities.symbols.length > 0) {
       symbols = tweet.entities.symbols.map(function(x) { return x.text.toUpperCase(); });
+      symbols = Array.from(new Set(symbols)); // remove duplicates
     }
 
     var bFromOfficialAccount = this.isFromOfficialAccount(user);

@@ -32,6 +32,13 @@ describe("Twitter Filterer", function() {
     expect(filterer.filter(tweet)).to.deep.equal({text: 'You should buy $EDG', symbols: ['EDG'], user: 'coinsoncoins', keyword: "buy", officialAccount: false});
   });
 
+  it("has single symbol for symbol duplicates", function() {
+    tweet = createTweet();
+    tweet.text = 'You should buy $EDG $EDG $EDG';
+    tweet.entities.symbols = [{text: 'EDG', indicies: [0, 4]}, {text: 'EDG', indicies: [0, 4]}, {text: 'EDG', indicies: [0, 4]}];
+    expect(filterer.filter(tweet)).to.deep.equal({text: 'You should buy $EDG $EDG $EDG', symbols: ['EDG'], user: 'coinsoncoins', keyword: "buy", officialAccount: false});
+  });
+
   it("has message if from the official account, even if no whitelisted symbol", function() {
     tweet = createTweet();
     tweet.user.screen_name = "BlueCOIN"; // capitalization is different than in officialAccounts
