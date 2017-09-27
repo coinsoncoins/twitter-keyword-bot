@@ -16,6 +16,7 @@ promises = [];
 promises[0] = client.get('lists/members', {slug: 'coins', owner_screen_name: 'coinsoncoins', count: 5000})
 promises[1] = client.get('lists/members', {slug: 'coins-5-50', owner_screen_name: 'coinsoncoins', count: 5000})
 promises[2] = client.get('lists/members', {slug: 'coins-50-200', owner_screen_name: 'coinsoncoins', count: 5000})
+promises[3] = client.get('lists/members', {slug: 'coins-1-10', owner_screen_name: 'coinsoncoins', count: 5000})
 
 Promise.all(promises)
 .then(values => {
@@ -30,6 +31,7 @@ Promise.all(promises)
     });
   }
   screen_names = Array.from(set);
+  screen_names.push('AltcoinArcade'); // test account
   fs.writeFileSync(__dirname + '/data/official-accounts.list', screen_names.join("\n"));
 })
 .catch(err => {
