@@ -27,4 +27,11 @@ describe("Message Creator", function() {
     expect(MessageCreator.create(obj)).to.equal(
       "@@bluecoin[countdown]: @bluecoin: burn coming soon $BLUE");
   });
+
+  it("truncates when there are too many symbols", function() {
+    var obj = {symbols: ['EDG','DAR','BTC','ETH','ETC'], keyword: 'countdown', user: 'coinsoncoins', text: '$EDG $DAR countdown $BTC $ETH $ETC' }
+    expect(MessageCreator.create(obj)).to.equal(
+      "EDG,DAR,...[countdown]: @coinsoncoins: $EDG $DAR countdown $BTC $ETH $ETC");
+
+  });
 });
